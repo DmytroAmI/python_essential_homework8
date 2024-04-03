@@ -1,33 +1,31 @@
 import shelve
 
 
-def add_link(links):
-    """Add link and link alias to the dict"""
-    link, link_name = input("Enter link: ").strip(), input("Create link name: ")
-    links.update({link: link_name})
-
-
-def save_links(links, filename):
-    """Save links to file"""
-    shelve_file = shelve.open(filename)
-    shelve_file[filename] = links
+def save_links(link, links, filename):
+    """Update links and save to file"""
+    with shelve.open(filename) as file:
+        links.update(link)
+        file[filename] = links
 
 
 def display_links(filename):
     """Display links from file"""
     try:
-        shelve_links = shelve.open(filename)
-        links = shelve_links[filename]
-        print(links)
+        with shelve.open(filename) as file:
+            print(file[filename])
     except KeyError:
         print("No such file or directory")
 
 
 if __name__ == "__main__":
     links_repo = {}
-    add_link(links_repo)
-    add_link(links_repo)
-    add_link(links_repo)
 
-    save_links(links_repo, "links")
+    link1, link_name1 = input("Enter link: ").strip(), input("Create link name: ")
+    link2, link_name2 = input("Enter link: ").strip(), input("Create link name: ")
+    link3, link_name3 = input("Enter link: ").strip(), input("Create link name: ")
+
+    save_links({link1: link_name1}, links_repo, "links")
+    save_links({link2: link_name2}, links_repo, "links")
+    save_links({link3: link_name3}, links_repo, "links")
+
     display_links("links")
